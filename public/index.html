@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unified Chat — Twitch + Kick + TikTok + YouTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Entry screen -->
+  <section id="gate" class="gate">
+    <div class="gate-card">
+      <p class="eyebrow">Unified Chat</p>
+      <h1 class="title">Merge your chats<br /><span class="accent-split"><span class="tw">Twitch</span> × <span class="kk">Kick</span> × <span class="tt">TikTok</span> × <span class="yt">YouTube</span></span></h1>
+      <p class="sub">Enter a username only — no login or password needed.</p>
+
+      <form id="gate-form">
+        <label class="field">
+          <span class="field-label tw-label">Twitch username</span>
+          <input type="text" id="twitch-input" placeholder="e.g. shroud" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label kk-label">Kick username</span>
+          <input type="text" id="kick-input" placeholder="e.g. xqc" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label tt-label">TikTok username</span>
+          <input type="text" id="tiktok-input" placeholder="e.g. officialgeilegisela" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label yt-label">YouTube live URL or video ID</span>
+          <input type="text" id="youtube-input" placeholder="e.g. youtube.com/watch?v=..." autocomplete="off" />
+        </label>
+        <p id="gate-error" class="gate-error" hidden></p>
+        <button type="submit" class="go-btn">Open Chat</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Merged chat screen -->
+  <main id="stage" class="stage" hidden>
+    <header class="stage-header">
+      <div class="brand">Unified Chat</div>
+      <div class="status-pills">
+        <span class="pill pill-tw" id="tw-pill"><span class="badge badge-tw">TW</span><span id="tw-status">off</span></span>
+        <span class="pill pill-kk" id="kk-pill"><span class="badge badge-kk">KK</span><span id="kk-status">off</span></span>
+        <span class="pill pill-tt" id="tt-pill"><span class="badge badge-tt">TT</span><span id="tt-status">off</span></span>
+        <span class="pill pill-yt" id="yt-pill"><span class="badge badge-yt">YT</span><span id="yt-status">off</span></span>
+      </div>
+      <button id="reset-btn" class="reset-btn">Change usernames</button>
+    </header>
+
+    <div class="feed-wrap">
+      <div class="feed" id="feed"></div>
+    </div>
+  </main>
+
+<script src="app.js"></script>
+</body>
+</html>

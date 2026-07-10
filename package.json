@@ -1,0 +1,19 @@
+{
+  "name": "dual-chat",
+  "version": "1.0.0",
+  "description": "صفحة تعرض شات تويتش وكيك جنب بعض",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "tiktok-live-connector": "^2.4.0",
+    "ws": "^8.21.0",
+    "youtubei.js": "^17.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
