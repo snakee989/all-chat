@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Unified Chat — Twitch + Kick + TikTok + YouTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<!-- Twitch Embed API: تُحمّل عند الحاجة فقط (Show Video) لتوفير الموارد -->
+</head>
+<body>
+
+  <!-- Site password screen (gate before anything) -->
+  <section id="site-gate" class="gate site-gate" hidden>
+    <div class="gate-card">
+      <p class="eyebrow">Unified Chat</p>
+      <h1 class="title">Site Access</h1>
+      <p class="sub">This page is password protected. Enter it to continue.</p>
+      <form id="site-gate-form">
+        <label class="field">
+          <span class="field-label">Password</span>
+          <input type="password" id="site-password-input" placeholder="••••••••" autocomplete="current-password" />
+        </label>
+        <p id="site-gate-error" class="gate-error" hidden></p>
+        <button type="submit" class="go-btn">Unlock</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Entry screen (usernames) -->
+  <section id="gate" class="gate" hidden>
+    <div class="gate-card">
+      <p class="eyebrow">Unified Chat</p>
+      <h1 class="title">Merge your chats<br /><span class="accent-split"><span class="tw">Twitch</span> × <span class="kk">Kick</span> × <span class="tt">TikTok</span> × <span class="yt">YouTube</span></span></h1>
+      <p class="sub">Enter a username only — reading is anonymous, no account needed.</p>
+
+      <form id="gate-form">
+        <label class="field">
+          <span class="field-label tw-label">Twitch username</span>
+          <input type="text" id="twitch-input" placeholder="e.g. shroud" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label kk-label">Kick username</span>
+          <input type="text" id="kick-input" placeholder="e.g. xqc" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label tt-label">TikTok username</span>
+          <input type="text" id="tiktok-input" placeholder="e.g. officialgeilegisela" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label yt-label">YouTube live URL or video ID</span>
+          <input type="text" id="youtube-input" placeholder="e.g. youtube.com/watch?v=..." autocomplete="off" />
+        </label>
+        <p id="gate-error" class="gate-error" hidden></p>
+        <button type="submit" class="go-btn">Open Chat</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Merged chat screen -->
+  <main id="stage" class="stage" hidden>
+    <header class="stage-header">
+      <div class="brand">Unified Chat</div>
+      <div class="status-pills">
+        <span class="pill pill-tw" id="tw-pill"><span class="badge badge-tw">TW</span><span id="tw-status">off</span></span>
+        <span class="pill pill-kk" id="kk-pill"><span class="badge badge-kk">KK</span><span id="kk-status">off</span></span>
+        <span class="pill pill-tt" id="tt-pill"><span class="badge badge-tt">TT</span><span id="tt-status">off</span></span>
+        <span class="pill pill-yt" id="yt-pill"><span class="badge badge-yt">YT</span><span id="yt-status">off</span></span>
+      </div>
+
+      <!-- Stat icons: each shows a count badge and opens a panel listing the
+           people behind that stat (subs/gifts, bits). Clicking another icon
+           switches panels — only one is open at a time. -->
+      <div class="stat-icons" id="stat-icons" hidden>
+        <button class="stat-icon" id="stat-subs-btn" type="button" aria-label="Subscriptions and gifts" title="Subscriptions & Gifts">
+          <span class="stat-glyph">🎁</span><span class="stat-count" id="stat-subs-count">0</span>
+        </button>
+        <button class="stat-icon" id="stat-bits-btn" type="button" aria-label="Bits" title="Bits">
+          <span class="stat-glyph">◆</span><span class="stat-count" id="stat-bits-count">0</span>
+        </button>
+      </div>
+
+      <button id="reset-btn" class="reset-btn">Change</button>
+    </header>
+
+    <!-- Stat panel: a single container whose content swaps based on which icon
+         is active (subs / bits). Positioned under the header. -->
+    <div class="stat-panel" id="stat-panel" hidden>
+      <div class="stat-panel-head">
+        <span class="stat-panel-title" id="stat-panel-title">Subscriptions</span>
+        <div class="stat-panel-actions">
+          <button class="stat-panel-reset" id="stat-panel-reset" type="button" title="Reset these stats to zero">Reset</button>
+          <button class="stat-panel-close" id="stat-panel-close" type="button" aria-label="Close">✕</button>
+        </div>
+      </div>
+      <div class="stat-panel-body" id="stat-panel-body"></div>
+    </div>
+
+    <!-- Video area: يظهر فقط عند الضغط على Show Video (لتويتش). يعطّل عناصر
+         الداخل ويُدمّر المشغل عند Hide لتوفير الإنترنت والموارد. -->
+    <div id="video-area" class="video-area" hidden>
+      <div id="video-host" class="video-host"></div>
+    </div>
+
+    <div class="feed-wrap">
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <!-- Chat composer: يظهر فقط لـ Twitch، ويتطلب ربط حساب أولاً -->
+    <footer class="composer" id="composer" hidden>
+      <div class="composer-row">
+        <button id="video-toggle-btn" class="composer-btn video-toggle" hidden>Show Video</button>
+        <div class="composer-status" id="composer-status"></div>
+      </div>
+      <form id="composer-form" class="composer-input-row" hidden>
+        <input type="text" id="composer-text" class="composer-text" placeholder="Send a message…" autocomplete="off" maxlength="500" />
+        <button type="submit" class="composer-send">Send</button>
+      </form>
+      <button id="connect-twitch-btn" class="connect-btn">Connect Twitch to chat</button>
+    </footer>
+  </main>
+
+<script src="app.js"></script>
+</body>
+</html>
