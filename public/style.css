@@ -1,0 +1,778 @@
+:root {
+  --bg: #0b0d10;
+  --panel: #14171c;
+  --panel-2: #191d24;
+  --line: #23272f;
+  --text: #e6e8eb;
+  --muted: #7c828c;
+  --tw: #9147ff;
+  --tw-dim: #9147ff33;
+  --kk: #53fc18;
+  --kk-dim: #53fc1833;
+  --tt: #fe2c55;
+  --tt-dim: #fe2c5533;
+  --yt: #ff0000;
+  --yt-dim: #ff000033;
+  --shared: #ffb627;
+
+* { box-sizing: border-box; }
+
+/* Explicit override: without this, .gate/.stage's own display:flex can win
+   the CSS specificity tie against the browser's default [hidden] rule,
+   leaving both screens visible stacked on top of each other. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Space Grotesk", "IBM Plex Mono", sans-serif;
+}
+
+/* ---------- Entry screen ---------- */
+.gate {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, var(--tw-dim), transparent 40%),
+    radial-gradient(circle at 80% 80%, var(--kk-dim), transparent 40%),
+    radial-gradient(circle at 50% 100%, var(--tt-dim), transparent 45%),
+    radial-gradient(circle at 0% 60%, var(--yt-dim), transparent 40%),
+    var(--bg);
+}
+
+.gate-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 32px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.accent-split .tw { color: var(--tw); }
+.accent-split .kk { color: var(--kk); }
+.accent-split .tt { color: var(--tt); }
+.accent-split .yt { color: var(--yt); }
+
+.sub {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* Banner shown on the setup screen when a returning client's previous stream
+   ended (server sent `session_ended`). Tells the viewer why their saved
+   channels were cleared. */
+.gate-notice {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border: 1px solid var(--shared);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--shared) 14%, var(--panel));
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.field { display: block; margin-bottom: 16px; }
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.tw-label { color: var(--tw); }
+.kk-label { color: var(--kk); }
+.tt-label { color: var(--tt); }
+.yt-label { color: var(--yt); }
+
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field input:focus { border-color: var(--muted); }
+
+/* ---------- Kick multi-channel inputs ---------- */
+/* The Kick field holds 1-3 channel inputs. Each row is a flex line of input + an
+   optional "×" remove button (the primary row has no remove button). */
+.kick-fields { display: flex; flex-direction: column; gap: 8px; }
+
+.kick-input-row { display: flex; gap: 8px; align-items: stretch; }
+
+/* Override .field input { width: 100% } so the input shares the row with the
+   remove button instead of forcing it onto the next line. */
+.kick-input-row input { flex: 1; width: auto; }
+
+.kick-remove-btn {
+  flex: none;
+  width: 40px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: #ff6b6b;
+  border-radius: 10px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.kick-remove-btn:hover { border-color: #ff6b6b; }
+
+.kick-add-btn {
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--kk);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.kick-add-btn:hover:not(:disabled) { border-color: var(--kk); }
+.kick-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.gate-error {
+  color: #ff6b6b;
+  font-size: 13.5px;
+  margin: -6px 0 14px;
+}
+
+.go-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--tw), var(--kk), var(--tt), var(--yt));
+  color: #0b0d10;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.go-btn:hover { filter: brightness(1.08); }
+
+/* ---------- Chat screen ---------- */
+.stage {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.status-pills {
+  display: flex;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 800;
+  color: #0b0d10;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.badge-tw { background: var(--tw); }
+.badge-kk { background: var(--kk); }
+.badge-tt { background: var(--tt); color: #fff; }
+.badge-yt { background: var(--yt); color: #fff; }
+
+/* Live viewer count inside a TW/KK status pill. Rendered as a small tinted
+   chip so it reads as "TW ● live · 1,234" rather than blending into the
+   status text. Hidden (via the `hidden` attr) when the count is unknown. */
+.pill-viewers {
+  margin-inline-start: 2px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+.pill-tw .pill-viewers { background: rgba(145, 71, 255, 0.18); }
+.pill-kk .pill-viewers { background: rgba(83, 252, 24, 0.16); }
+
+.reset-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.reset-btn:hover { border-color: var(--muted); }
+
+.feed-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.feed {
+  width: 100%;
+  max-width: 780px;
+  overflow-y: auto;
+  padding: 16px 20px 24px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 3px 0;
+  animation: fadeIn 200ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: #0b0d10;
+  margin-top: 2px;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.msg-icon.tw { background: var(--tw); }
+.msg-icon.kk { background: var(--kk); }
+.msg-icon.tt { background: var(--tt); color: #fff; }
+.msg-icon.yt { background: var(--yt); color: #fff; }
+
+.msg-text { word-break: break-word; }
+.msg-user { font-weight: 700; }
+.msg-content { color: var(--text); opacity: 0.92; }
+
+.emote {
+  height: 1.4em;
+  width: auto;
+  vertical-align: middle;
+  margin: -0.1em 1px;
+  display: inline-block;
+}
+
+.system-row {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 4px 0 4px 30px;
+}
+
+/* ---------- Twitch event rows (sub / resub / gift / raid) ---------- */
+/* Events are highlighted with a colored left accent and a tinted background so
+   they stand out from regular chat. Each kind gets its own accent color. */
+.event-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 10px;
+  margin: 4px 0;
+  border-radius: 8px;
+  background: var(--panel);
+  border-inline-start: 3px solid var(--tw);
+  animation: fadeIn 200ms ease-out;
+}
+
+.event-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  margin-top: 1px;
+  line-height: 1;
+}
+
+.event-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.event-label {
+  font-weight: 700;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.event-message {
+  color: var(--muted);
+  font-size: 13px;
+  word-break: break-word;
+}
+
+/* Accent color per kind */
+.event-sub,
+.event-resub { border-inline-start-color: #8a4fff; }
+.event-sub .event-icon,
+.event-resub .event-icon { color: #b08bff; }
+
+.event-gift,
+.event-communitygift { border-inline-start-color: #ffb627; }
+.event-gift .event-icon,
+.event-communitygift .event-icon { color: #ffd166; }
+
+.event-raid { border-inline-start-color: #ff5c5c; }
+.event-raid .event-icon { color: #ff8a8a; }
+
+.event-follow { border-inline-start-color: var(--kk); }
+.event-follow .event-icon { color: var(--kk); }
+
+/* ---------- Bits (cheers) badge on a chat row ---------- */
+.has-bits { background: rgba(56, 134, 255, 0.08); }
+
+.bits-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #1e90ff;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* ---------- Shared Chat badge (Twitch Stream Together) ----------
+   Marks messages/events mirrored from a linked channel. Gold so it stands out
+   as "foreign" without competing with the platform colors. Sits between the
+   platform icon and the bits badge on chat rows, and between the icon and body
+   on event rows. */
+.shared-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--shared);
+  color: #2a1f00;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* A gem glyph before the bits count, so the badge reads like "◆ 500" */
+.bits-badge::before { content: "◆"; font-size: 10px; }
+
+/* ---------- Stat icons + panel (header) ---------- */
+/* Three icons in the header, each with a count badge. Only one panel is open
+   at a time; clicking an icon toggles/switches the panel below the header. */
+.stat-icons {
+  display: flex;
+  gap: 6px;
+  margin-inline-start: 4px;
+}
+
+.stat-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.stat-icon:hover { border-color: var(--muted); }
+.stat-icon.is-active { border-color: var(--tw); background: var(--tw-dim); }
+
+.stat-glyph { font-size: 14px; line-height: 1; }
+
+.stat-count {
+  min-width: 16px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: "IBM Plex Mono", monospace;
+  text-align: center;
+}
+
+/* The panel sits just under the header, full width up to the feed's max width.
+   It overlays nothing — it pushes content down so the feed stays scrollable. */
+.stat-panel {
+  flex: none;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  padding: 12px 16px 14px;
+}
+
+.stat-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.stat-panel-title {
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* Groups the reset + close buttons on the trailing edge of the panel head. */
+.stat-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-panel-reset {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 4px 10px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1;
+}
+.stat-panel-reset:hover { border-color: var(--muted); color: var(--text); }
+
+.stat-panel-close {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+.stat-panel-close:hover { border-color: var(--muted); color: var(--text); }
+
+.stat-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* A titled group inside the panel (e.g. "Subscribers", "Gifters") */
+.stat-section { display: flex; flex-direction: column; gap: 6px; }
+
+.stat-section-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.stat-empty {
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  padding: 2px 0;
+}
+
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* One person per row: platform badge + name + trailing metric */
+.stat-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 13.5px;
+}
+.stat-entry:hover { background: var(--panel-2); }
+
+.stat-entry-badge {
+  flex: none;
+  width: 22px;
+  height: 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 800;
+  color: #0b0d10;
+  font-family: "Space Grotesk", sans-serif;
+}
+.stat-entry-badge.tw { background: var(--tw); }
+.stat-entry-badge.kk { background: var(--kk); }
+
+.stat-entry-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.stat-entry-value {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* ---------- Site password gate ---------- */
+.site-gate .title { font-size: 26px; }
+
+/* ---------- Video area (Twitch mobile layout) ---------- */
+.video-area {
+  flex: none;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  background: #000;
+  border-bottom: 1px solid var(--line);
+}
+
+.video-host {
+  position: relative;
+  width: 100%;
+  /* نسبة عرض/ارتفاع ثابتة (16:9) تمنع القفز عند تحميل المشغل */
+  padding-top: 56.25%;
+}
+
+.video-host iframe,
+.video-host .video-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---------- Composer (chat input + buttons) ---------- */
+.composer {
+  flex: none;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  padding: 8px 12px;
+  /* مساحة لشريط المتصفح على الجوال (iOS safe area) */
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.composer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.composer-btn,
+.composer-send,
+.connect-btn {
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 13px;
+  transition: border-color 0.15s ease, background 0.15s ease, filter 0.15s ease;
+}
+
+.composer-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+.composer-btn:hover { border-color: var(--muted); }
+
+.video-toggle { color: var(--tw); border-color: var(--tw-dim); }
+.video-toggle.is-active { background: var(--tw); color: #0b0d10; border-color: var(--tw); }
+
+.composer-status {
+  flex: 1;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composer-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.composer-text {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.composer-text:focus { border-color: var(--tw); }
+
+.composer-send {
+  flex: none;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--tw);
+  color: #0b0d10;
+  font-weight: 800;
+  font-size: 14px;
+}
+.composer-send:hover { filter: brightness(1.1); }
+.composer-send:disabled { opacity: 0.5; cursor: default; }
+
+.connect-btn {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--tw);
+  background: var(--tw-dim);
+  color: var(--tw);
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 14px;
+}
+.connect-btn:hover { filter: brightness(1.15); }
+.connect-btn.is-connected {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .stage-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .brand { display: none; }
+  .status-pills { margin-inline-start: 0; gap: 6px; }
+  .reset-btn { padding: 6px 10px; font-size: 12px; }
+
+  .feed { padding: 12px 14px 18px; font-size: 13.5px; }
+
+  .pill { padding: 4px 8px 4px 4px; font-size: 11px; }
+  .badge { width: 18px; height: 18px; font-size: 8px; }
+
+  /* الفيديو يأخذ العرض الكامل في الأعلى (نفس تطبيق تويتش على الجوال) */
+  .video-area { max-width: 100%; }
+}
+
+/* فوق الجوال: إخفاء زر الفيديو من الـ composer (نجعله في الهيدر مستقبلاً)؛
+   حالياً نُبقيه في كل الحالات لأنه يدمّر/يُنشئ المشغل لتوفير الموارد. */
